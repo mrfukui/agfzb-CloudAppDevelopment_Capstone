@@ -27,7 +27,7 @@ DEBUG = True
 
 APPEND_SLASH = True
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["djangoappFukui2.mybluemix.net", "djangoappFukui2.mybluemix.net/static","localhost"]
 
 
 # Application definition
