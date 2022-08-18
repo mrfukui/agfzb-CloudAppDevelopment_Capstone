@@ -1,6 +1,6 @@
 from django.contrib import admin
 # from .models import related models
-from .models import *
+from .models import CarMake, CarModel
 
 # Register your models here.
 
@@ -20,4 +20,4 @@ class CarMakeAdmin(admin.ModelAdmin):
 
 # Register models here
 admin.site.register(CarMake, CarMakeAdmin)
-admin.site.reigster(CarModel, CarModelAdmin)
+admin.site.register(CarModel, CarModelAdmin)
