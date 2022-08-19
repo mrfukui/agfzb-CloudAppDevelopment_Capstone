@@ -23,15 +23,15 @@ class CarModel(models.Model):
     SUV = 'suv'
     WAGON = 'wagon'
     OTHERS = 'others'
-    CAR_CHOICES = [(SEDAN, "Sedan"), (SUV, "SUV"), (WAGON, "Wagon"), (OTHERS, "Others")]
+    CAR_TYPES = [(SEDAN, "Sedan"), (SUV, "SUV"), (WAGON, "Wagon"), (OTHERS, "Others")]
 # - Many-To-One relationship to Car Make model (One Car Make has many Car Models, using ForeignKey field)
-    carmake = models.ForeignKey(CarMake, null=True, on_delete=models.CASCADE)
+    make = models.ForeignKey(CarMake, null=True, on_delete=models.CASCADE)
 # - Name
     name = models.CharField(null=False, max_length=40)
 # - Dealer id, used to refer a dealer created in cloudant database
-    dealerid = models.IntegerField(null=True)
+    dealer_id = models.IntegerField(null=True)
 # - Type (CharField with a choices argument to provide limited choices such as Sedan, SUV, WAGON, etc.)
-    cartype = models.CharField(null=False, max_length=30, choices=CAR_CHOICES)
+    type = models.CharField(null=False, max_length=30, choices=CAR_TYPES)
 # - Year (DateField)
     year = models.DateField(null=True)
 # - Any other fields you would like to include in car model
@@ -77,6 +77,7 @@ class DealerReview:
         self.car_model = car_model
         self.car_year = car_year
         self.sentiment = sentiment
+        self.id=id
 
     def __str__(self):
         return "Review: " + self.review

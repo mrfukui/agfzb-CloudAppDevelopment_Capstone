@@ -5,6 +5,7 @@ from requests.auth import HTTPBasicAuth
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features,SentimentOptions
+import time
 
 def get_request(url, **kwargs):
     api_key = kwargs.get("api_key")
@@ -86,43 +87,40 @@ def get_dealer_by_id_from_cf(url, id):
 
     return results[0]
 
-def get_dealer_reviews_from_cf(url, **kwargs):
+def get_dealer_reviews_from_cf(url, dealer_id):
     results = []
-    id = kwargs.get("id")
-    if id:
-        json_result = get_request(url, id=id)
-    else:
-        json_result = get_request(url)
-
+    json_result = get_request(url, dealerId=dealer_id)
     if json_result:
-        reviews = json_result["body"]["data"]
-
-        for dealer_review in reviews:
-            dealer_review = reviews["docs"][0]
+        # Get the row list in JSON as dealers
+        body = json_result.get("body")
+        # For each dealer object
+        if body:
+            for review in body.get("reviews"):
+                # Get its content in `doc` object
+                # dealer_doc = dealer["docs"]
+                dealer_doc = review
+                nluAnalyzedReview = analyze_review_sentiments(dealer_doc.get("review",""))
+                print('nluAnalyzedReview is: ')
+                print(nluAnalyzedReview)
+                # Create a DealerReview object with values in `doc` object
+                dealer_obj = DealerReview(
+                    dealership=dealer_doc.get("dealership",""), 
+                    name=dealer_doc.get("name",""),
+                    purchase=dealer_doc.get("purchase",""),
+                    id=dealer_doc.get("id",""),
+                    review=dealer_doc.get("review",""), 
+                    purchase_date=dealer_doc.get("purchase_date",""),
+                    car_make=dealer_doc.get("car_make",""),
+                    car_model=dealer_doc.get("car_model",""),
+                    car_year=dealer_doc.get("car_year",""),
+                    sentiment=nluAnalyzedReview
+                )
+                # if (dealer_doc["id"] == dealer_id):
+                results.append(dealer_obj)
             
-            review_obj = DealerReview(dealership=dealer_review["dealership"],
-                                   name=dealer_review["name"],
-                                   purchase=dealer_review["purchase"],
-                                   review=dealer_review["review"])
-            if "id" in dealer_review:
-                review_obj.id = dealer_review["id"]
-            if "purchase_date" in dealer_review:
-                review_obj.purchase_date = dealer_review["purchase_date"]
-            if "car_make" in dealer_review:
-                review_obj.car_make = dealer_review["car_make"]
-            if "car_model" in dealer_review:
-                review_obj.car_model = dealer_review["car_model"]
-            if "car_year" in dealer_review:
-                review_obj.car_year = dealer_review["car_year"]
-            
-            sentiment = analyze_review_sentiments(review_obj.review)
-            print(sentiment)
-            review_obj.sentiment = sentiment
-            results.append(review_obj)
-
     return results
 
-def analyze_review_sentiments(dealerreview):
+def analyze_review_sentiments(text):
     url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/10a1b3d4-73d7-41b7-ba2f-c1bf7f65205d"
     api_key = "3sxYWdXhCCj_KlHswV5Na5_e3CF37y51ILguvhMhAS1n"
     authenticator = IAMAuthenticator(api_key)
@@ -133,7 +131,7 @@ def analyze_review_sentiments(dealerreview):
     label = response['sentiment']['document']['label']
     return(label)
 
-def post_request(url, json_payload, **kwargs):
+def post_request(url, payload, **kwargs):
     print(kwargs)
     print("POST to {} ".format(url))
     print(payload)
