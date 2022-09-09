@@ -27,7 +27,9 @@ DEBUG = True
 
 APPEND_SLASH = True
 
-ALLOWED_HOSTS = ["djangoappFukui2.mybluemix.net", "djangoappFukui2.mybluemix.net/static","localhost"]
+ALLOWED_HOSTS = ["localhost", "localhost:8000", "djangoappFukui2.mybluemix.net", "djangoappFukui2.mybluemix.net/static"]
+
+CSRF_TRUSTED_ORIGINS = ['https://mrfukui-8000.theiadocker-2-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai', 'djangoappFukui2.mybluemix.net']
 
 
 # Application definition
