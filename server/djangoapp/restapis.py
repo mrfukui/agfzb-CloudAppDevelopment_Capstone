@@ -84,7 +84,7 @@ def get_dealer_by_id_from_cf(url, id):
                                        zip=dealer_doc["zip"])                    
                 results.append(dealer_obj)
 
-    return results[0]
+    return results
 
 def get_dealer_reviews_from_cf(url, dealerId):
 
