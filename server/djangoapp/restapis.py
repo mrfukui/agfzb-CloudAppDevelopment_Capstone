@@ -69,7 +69,7 @@ def get_dealer_by_id_from_cf(url, id):
         # For each dealer object
         for dealer in dealers:
             # Get its content in `doc` object
-            dealer_doc = dealer["doc"]
+            dealer_doc = dealer
 
             if dealer_doc["id"] == id:
                 # Create a CarDealer object with values in `doc` object
