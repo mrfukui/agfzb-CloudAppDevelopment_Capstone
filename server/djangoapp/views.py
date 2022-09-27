@@ -93,8 +93,8 @@ def get_dealerships(request):
 def get_dealer_details(request, id):
     if request.method == "GET":
         context = {}
-        url = "https://d9e0e148.us-south.apigw.appdomain.cloud/api/dealership"
-        dealer = get_dealer_by_id_from_cf(url, id)
+        dealer_url = "https://d9e0e148.us-south.apigw.appdomain.cloud/api/dealership"
+        dealer = get_dealer_by_id_from_cf(dealer_url, id)
         context["dealer"] = dealer
     
         review_url = "https://d9e0e148.us-south.apigw.appdomain.cloud/api/review"
@@ -112,7 +112,7 @@ def add_review(request, dealer_id):
         # Get dealer details from the API
         context = {
             "cars": CarModel.objects.all(),
-            "dealer_id": dealer_id
+            "id": id
         }
         return render(request, 'djangoapp/add_review.html', context)
 
@@ -120,7 +120,7 @@ def add_review(request, dealer_id):
         if request.user.is_authenticated:
             review['review'] = {}
             review['review']["time"] = datetime.utcnow().isoformat()
-            review['review']["dealership"] = dealer_id
+            review['review']["dealership"] = id
             review['review']["review"] = request.POST["review"]
             review['review']["purchase"] = request.POST["purchase"]
             review['review']['purchase_date'] = request.POST['purchase_date'] or "N/A"
@@ -136,7 +136,7 @@ def add_review(request, dealer_id):
             #json_payload = {}
             #json_payload['review'] = review
 
-            post_request(url, review, dealerId=dealer_id)
+            post_request(url, review, id=id)
 
-            return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
+            return redirect("djangoapp:dealer_details", id=id)
 
