@@ -15,7 +15,7 @@
     <main class="container">
         {% if user.is_authenticated%}
         <h1>Add a Review about this Dealership</h1>
-        <form class="my-3" action="{% url 'djangoapp:add_review' dealer_id %}" method="post">
+        <form class="my-3" action="{% url 'djangoapp:add_review' dealer.id %}" method="post">
             <div class='container' style="width: 600px;">
                 {% csrf_token %}
                 <div class="form-group">
